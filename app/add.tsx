@@ -4,6 +4,7 @@ import {
     ScrollView, Image, ActivityIndicator, Alert
 } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
+import * as ImageManipulator from 'expo-image-manipulator'
 import * as Location from 'expo-location'
 import { useRouter } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -71,11 +72,16 @@ export default function AddScreen() {
 
         const result = await ImagePicker.launchCameraAsync({
             mediaTypes: ['images'],
-            quality: 0.8,
+            quality: 0.7,
         })
 
         if (!result.canceled) {
-            setPhotos(prev => [...prev, result.assets[0].uri])
+            const manipulated = await ImageManipulator.manipulateAsync(
+                result.assets[0].uri,
+                [{ resize: { width: 1200 } }],
+                { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+            )
+            setPhotos(prev => [...prev, manipulated.uri])
         }
     }
 
@@ -149,7 +155,7 @@ export default function AddScreen() {
                 const filename = uri.split('/').pop() ?? `photo_${i}.jpg`
                 const match = /\.(\w+)$/.exec(filename)
                 const type = match ? `image/${match[1]}` : 'image/jpeg'
-                formData.append('photo', { uri, name: filename, type } as any)
+                formData.append('photos[]', { uri, name: filename, type } as any)
             })
 
             const res = await fetch(`${API_URL}/mushrooms`, {

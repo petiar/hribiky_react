@@ -1,7 +1,6 @@
 import '../locales/i18n'
-import { useEffect, useState } from 'react'
-import { View, Text, Image, StyleSheet } from 'react-native'
-import { Slot } from 'expo-router'
+import { useEffect } from 'react'
+import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import NetInfo from '@react-native-community/netinfo'
 import { sendQueuedMushrooms, sendQueuedComments } from '../utils/offlineQueue'
@@ -12,14 +11,8 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL!
 const API_KEY = process.env.EXPO_PUBLIC_API_KEY!
 
 export default function Layout() {
-    const [ready, setReady] = useState(false)
-
     useEffect(() => {
-        (async () => {
-            await new Promise(resolve => setTimeout(resolve, 2000))
-            setReady(true)
-            await SplashScreen.hideAsync()
-        })()
+        SplashScreen.hideAsync()
     }, [])
 
     useEffect(() => {
@@ -41,43 +34,7 @@ export default function Layout() {
         return () => unsubscribe()
     }, [])
 
-    if (!ready) {
-        return (
-            <View style={styles.container}>
-                <Image
-                    source={require('../assets/splash.png')}
-                    style={styles.logo}
-                    resizeMode="contain"
-                />
-                <Text style={styles.title}>Hribiky.sk</Text>
-                <Text style={styles.subtitle}>Databáza turistických rozcestníkov</Text>
-            </View>
-        )
-    }
-
-    return <Slot />
+    return (
+        <Stack screenOptions={{ headerShown: false, gestureEnabled: true }} />
+    )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    logo: {
-        width: 180,
-        height: 270,
-        marginBottom: 24,
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: '500',
-        color: '#1a1a1a',
-        marginBottom: 8,
-    },
-    subtitle: {
-        fontSize: 15,
-        color: '#888',
-    },
-})

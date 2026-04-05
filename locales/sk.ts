@@ -33,7 +33,7 @@ export default {
         errorGeneral: 'Niečo sa pokazilo, skús znova.',
         errorConnection: 'Skontroluj internetové pripojenie.',
         success: 'Hotovo!',
-        successMessage: 'Hríbik bol pridaný.',
+        successMessage: 'Hríbik bol odoslaný a po schválení administrátorom sa zobrazí na mape.',
         successButton: 'OK',
     },
     addComment: {
@@ -60,6 +60,11 @@ export default {
         back: '← Späť',
         share: 'Zdieľať',
         notFound: 'Hríbik sa nenašiel',
+        retry: 'Obnoviť stránku',
+        commentsTitle: 'Komentáre',
+        commentBy: 'Pridal {{name}}, dňa {{date}}.',
+        navigateHint: 'Ťukni pre navigáciu',
+        altitude: '{{value}} m n. m.',
     },
     leaderboard: {
         title: 'Leaderboard',

@@ -4,6 +4,7 @@ import {
     ScrollView, Image, ActivityIndicator, Alert
 } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
+import * as ImageManipulator from 'expo-image-manipulator'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import * as Haptics from 'expo-haptics'
@@ -42,10 +43,15 @@ export default function AddCommentScreen() {
         }
         const result = await ImagePicker.launchCameraAsync({
             mediaTypes: ['images'],
-            quality: 0.8,
+            quality: 0.7,
         })
         if (!result.canceled) {
-            setPhotos(prev => [...prev, result.assets[0].uri])
+            const manipulated = await ImageManipulator.manipulateAsync(
+                result.assets[0].uri,
+                [{ resize: { width: 1200 } }],
+                { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+            )
+            setPhotos(prev => [...prev, manipulated.uri])
         }
     }
 
@@ -97,7 +103,7 @@ export default function AddCommentScreen() {
                 const filename = uri.split('/').pop() ?? `photo_${i}.jpg`
                 const match = /\.(\w+)$/.exec(filename)
                 const type = match ? `image/${match[1]}` : 'image/jpeg'
-                formData.append('photo', { uri, name: filename, type } as any)
+                formData.append('photo[]', { uri, name: filename, type } as any)
             })
 
             const res = await fetch(`${API_URL}/mushrooms_comments`, {

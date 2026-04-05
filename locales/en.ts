@@ -35,7 +35,7 @@ export default {
         errorGeneral: 'Something went wrong, please try again.',
         errorConnection: 'Check your internet connection.',
         success: 'Done!',
-        successMessage: 'Trail marker has been added.',
+        successMessage: 'Trail marker has been submitted and will appear on the map after admin approval.',
         successButton: 'OK',
     },
     addComment: {
@@ -62,6 +62,11 @@ export default {
         back: '← Back',
         share: 'Share',
         notFound: 'Trail marker not found',
+        retry: 'Reload page',
+        commentsTitle: 'Comments',
+        commentBy: 'Added by {{name}} on {{date}}.',
+        navigateHint: 'Tap to navigate',
+        altitude: '{{value}} m a.s.l.',
     },
     leaderboard: {
         title: 'Leaderboard',

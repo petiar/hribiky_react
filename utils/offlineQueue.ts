@@ -96,7 +96,7 @@ export const sendQueuedComments = async (commentsApiUrl: string, apiKey: string)
                 const filename = uri.split('/').pop() ?? `photo_${i}.jpg`
                 const match = /\.(\w+)$/.exec(filename)
                 const type = match ? `image/${match[1]}` : 'image/jpeg'
-                formData.append('photo', { uri, name: filename, type } as any)
+                formData.append('photos[]', { uri, name: filename, type } as any)
             })
 
             const res = await fetch(commentsApiUrl, {
@@ -139,7 +139,7 @@ export const sendQueuedMushrooms = async (apiUrl: string, apiKey: string): Promi
                 const filename = uri.split('/').pop() ?? `photo_${i}.jpg`
                 const match = /\.(\w+)$/.exec(filename)
                 const type = match ? `image/${match[1]}` : 'image/jpeg'
-                formData.append('photo', { uri, name: filename, type } as any)
+                formData.append('photos[]', { uri, name: filename, type } as any)
             })
 
             const res = await fetch(apiUrl, {

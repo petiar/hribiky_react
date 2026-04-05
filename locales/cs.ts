@@ -35,7 +35,7 @@ export default {
         errorGeneral: 'Něco se pokazilo, zkus znovu.',
         errorConnection: 'Zkontroluj internetové připojení.',
         success: 'Hotovo!',
-        successMessage: 'Houbička byla přidána.',
+        successMessage: 'Houbička byla odeslána a po schválení administrátorem se zobrazí na mapě.',
         successButton: 'OK',
     },
     addComment: {
@@ -62,6 +62,11 @@ export default {
         back: '← Zpět',
         share: 'Sdílet',
         notFound: 'Houbička nebyla nalezena',
+        retry: 'Obnovit stránku',
+        commentsTitle: 'Komentáře',
+        commentBy: 'Přidal {{name}}, dne {{date}}.',
+        navigateHint: 'Klepni pro navigaci',
+        altitude: '{{value}} m n. m.',
     },
     leaderboard: {
         title: 'Leaderboard',

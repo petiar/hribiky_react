@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { StyleSheet, View, TouchableOpacity, Text, ActivityIndicator, Image } from 'react-native'
-import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView from 'react-native-map-clustering'
+import { Marker, Callout, PROVIDER_GOOGLE, MapView as RNMapView } from 'react-native-maps'
 import { useRouter } from 'expo-router'
 import * as ExpoLocation from 'expo-location'
 import * as Haptics from 'expo-haptics'
@@ -10,6 +11,13 @@ import { useTranslation } from 'react-i18next'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL!
 const API_KEY = process.env.EXPO_PUBLIC_API_KEY!
+
+let lastRegion = {
+    latitude: 48.8,
+    longitude: 19.5,
+    latitudeDelta: 2,
+    longitudeDelta: 2,
+}
 
 type Mushroom = {
     id: number
@@ -27,7 +35,7 @@ export default function MapScreen() {
     const router = useRouter()
     const [mushrooms, setMushrooms] = useState<Mushroom[]>([])
     const [loading, setLoading] = useState(true)
-    const mapRef = useRef<MapView>(null)
+    const mapRef = useRef<RNMapView>(null)
     const theme = useTheme()
     const { t } = useTranslation()
     const [isOnline, setIsOnline] = useState<boolean | null>(null)
@@ -75,29 +83,44 @@ export default function MapScreen() {
         }, 800)
     }
 
+    const renderCluster = (cluster: any) => {
+        const { id, geometry, onPress, properties } = cluster
+        const { point_count } = properties
+        const [longitude, latitude] = geometry.coordinates
+        return (
+            <Marker
+                key={`cluster-${id}`}
+                coordinate={{ latitude, longitude }}
+                onPress={onPress}
+                tracksViewChanges={true}
+            >
+                <View style={styles.cluster}>
+                    <Image source={pinIcon} style={styles.clusterIcon} resizeMode="contain" />
+                    <View style={styles.clusterBadge}>
+                        <Text style={styles.clusterCount}>{point_count}</Text>
+                    </View>
+                </View>
+            </Marker>
+        )
+    }
+
     return (
         <View style={styles.container}>
             <MapView
                 ref={mapRef}
                 style={styles.map}
                 provider={PROVIDER_GOOGLE}
-                initialRegion={{
-                    latitude: 48.8,
-                    longitude: 19.5,
-                    latitudeDelta: 2,
-                    longitudeDelta: 2,
-                }}
+                initialRegion={lastRegion}
+                onRegionChangeComplete={region => { lastRegion = region }}
+                renderCluster={renderCluster}
             >
                 {mushrooms.map(m => (
                     <Marker
                         key={m.id}
                         coordinate={{ latitude: m.latitude, longitude: m.longitude }}
-                        title={m.title}
-                        description={m.name}
-                        image={pinIcon}
-                        style={{ width: 30, height: 45 }}
-                        tracksViewChanges={false}
+                        tracksViewChanges={true}
                     >
+                        <Image source={pinIcon} style={{ width: 30, height: 45 }} resizeMode="contain" />
                         <Callout tooltip onPress={() => router.push(`/mushroom/${m.id}`)}>
                             <View style={styles.callout}>
                                 {m.photos?.[0] && (
@@ -278,6 +301,23 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     leaderIcon: { fontSize: 20 },
+    cluster: { position: 'relative' },
+    clusterIcon: { width: 50, height: 75 },
+    clusterBadge: {
+        position: 'absolute',
+        bottom: 4,
+        right: 0,
+        minWidth: 28,
+        height: 28,
+        borderRadius: 14,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 5,
+        borderWidth: 0.5,
+        borderColor: '#ddd',
+    },
+    clusterCount: { color: '#1a1a1a', fontSize: 13, fontWeight: '700' },
     offlineBanner: {
         position: 'absolute',
         top: 106,
