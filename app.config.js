@@ -7,7 +7,11 @@ export default {
     scheme: "hribiky",
     plugins: [
       "expo-router",
-      "expo-localization"
+      "expo-localization",
+      "expo-font",
+      ["react-native-maps", {
+        "enableGoogleMaps": true
+      }]
     ],
     version: "1.0.0",
     orientation: "portrait",
