@@ -24,7 +24,9 @@
   "submit": {
     "production": {
       "ios": {
-        "appleId": "petiar@gmail.com"
+        "appleId": "petiar@gmail.com",
+        "ascAppId": "6777217981",
+        "appleTeamId": "A52VVRMSFD"
       }
     }
   }
