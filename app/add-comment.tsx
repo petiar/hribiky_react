@@ -61,11 +61,11 @@ export default function AddCommentScreen() {
 
     const submit = async () => {
         if (!name.trim()) {
-            Alert.alert('Chyba', t('addComment.errorName'))
+            Alert.alert(t('common.error'), t('addComment.errorName'))
             return
         }
         if (!description.trim()) {
-            Alert.alert('Chyba', t('addComment.errorDescription'))
+            Alert.alert(t('common.error'), t('addComment.errorDescription'))
             return
         }
 
@@ -85,9 +85,9 @@ export default function AddCommentScreen() {
                 })
                 await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
                 Alert.alert(
-                    'Uložené offline',
-                    'Nemáš internetové pripojenie. Komentár sme uložili a odošleme ho automaticky keď budeš online.',
-                    [{ text: 'OK', onPress: () => router.back() }]
+                    t('common.savedOfflineTitle'),
+                    t('addComment.savedOfflineMessage'),
+                    [{ text: t('addComment.successButton'), onPress: () => router.back() }]
                 )
                 return
             }
@@ -122,10 +122,26 @@ export default function AddCommentScreen() {
                     { text: t('addComment.successButton'), onPress: () => router.push('/') }
                 ])
             } else {
-                Alert.alert('Chyba', data.message ?? t('addComment.errorGeneral'))
+                Alert.alert(t('common.error'), data.message ?? t('addComment.errorGeneral'))
             }
         } catch (e) {
-            Alert.alert('Chyba', t('addComment.errorConnection'))
+            try {
+                await addCommentToQueue({
+                    mushroomId: String(id),
+                    name,
+                    description,
+                    email: email.trim() || undefined,
+                    photos,
+                })
+                await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
+                Alert.alert(
+                    t('common.savedOfflineTitle'),
+                    t('addComment.savedOfflineMessage'),
+                    [{ text: t('addComment.successButton'), onPress: () => router.back() }]
+                )
+            } catch {
+                Alert.alert(t('common.error'), t('addComment.errorGeneral'))
+            }
         } finally {
             setSubmitting(false)
         }

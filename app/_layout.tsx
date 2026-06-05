@@ -5,14 +5,21 @@ import * as SplashScreen from 'expo-splash-screen'
 import NetInfo from '@react-native-community/netinfo'
 import { sendQueuedMushrooms, sendQueuedComments } from '../utils/offlineQueue'
 import { Alert } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import i18n from '../locales/i18n'
 
 SplashScreen.preventAutoHideAsync()
 const API_URL = process.env.EXPO_PUBLIC_API_URL!
 const API_KEY = process.env.EXPO_PUBLIC_API_KEY!
 
+export const LANGUAGE_KEY = 'user_language'
+
 export default function Layout() {
     useEffect(() => {
-        SplashScreen.hideAsync()
+        AsyncStorage.getItem(LANGUAGE_KEY).then(saved => {
+            if (saved) i18n.changeLanguage(saved)
+            SplashScreen.hideAsync()
+        })
     }, [])
 
     useEffect(() => {
@@ -23,10 +30,13 @@ export default function Layout() {
                     sendQueuedComments(`${API_URL}/mushrooms_comments`, API_KEY),
                 ])
                 const parts: string[] = []
-                if (sentMushrooms > 0) parts.push(`${sentMushrooms} hríbik${sentMushrooms > 1 ? 'y' : ''}`)
-                if (sentComments > 0) parts.push(`${sentComments} komentár${sentComments > 1 ? 'e' : ''}`)
+                if (sentMushrooms > 0) parts.push(i18n.t('common.onlineSyncedMushroom', { count: sentMushrooms }))
+                if (sentComments > 0) parts.push(i18n.t('common.onlineSyncedComment', { count: sentComments }))
                 if (parts.length > 0) {
-                    Alert.alert('Online!', `Odoslali sme ${parts.join(' a ')} ktoré čakali offline.`)
+                    Alert.alert(
+                        i18n.t('common.onlineTitle'),
+                        i18n.t('common.onlineSynced', { items: parts.join(', ') })
+                    )
                 }
             }
         })

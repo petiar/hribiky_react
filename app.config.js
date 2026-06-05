@@ -26,8 +26,15 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "sk.hribiky.app",
+      buildNumber: "1",
       config: {
         googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY
+      },
+      infoPlist: {
+        NSLocationWhenInUseUsageDescription: "Používame GPS na zachytenie polohy hríbika.",
+        NSCameraUsageDescription: "Potrebujeme kameru na fotenie hríbikov.",
+        NSPhotoLibraryUsageDescription: "Vyberieme fotku hríbika z knižnice.",
+        NSPhotoLibraryAddUsageDescription: "Ukladáme fotky hríbikov do knižnice.",
       }
     },
     android: {

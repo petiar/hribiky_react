@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { StyleSheet, View, TouchableOpacity, Text, ActivityIndicator, Image } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Text, ActivityIndicator, Image, Modal } from 'react-native'
 import MapView from 'react-native-map-clustering'
 import { Marker, Callout, PROVIDER_GOOGLE, MapView as RNMapView } from 'react-native-maps'
 import { useRouter } from 'expo-router'
@@ -39,6 +39,7 @@ export default function MapScreen() {
     const theme = useTheme()
     const { t } = useTranslation()
     const [isOnline, setIsOnline] = useState<boolean | null>(null)
+    const [menuVisible, setMenuVisible] = useState(false)
 
     useEffect(() => {
         NetInfo.fetch().then(state => {
@@ -173,11 +174,61 @@ export default function MapScreen() {
                 <Text style={styles.fabText}>+</Text>
             </TouchableOpacity>
             <TouchableOpacity
-                style={styles.leaderBtn}
-                onPress={() => router.push('/leaderboard')}
+                style={styles.menuBtn}
+                onPress={() => setMenuVisible(true)}
             >
-                <Text style={styles.leaderIcon}>🏆</Text>
+                <Text style={styles.menuIcon}>☰</Text>
             </TouchableOpacity>
+
+            <Modal
+                visible={menuVisible}
+                transparent
+                animationType="fade"
+                onRequestClose={() => setMenuVisible(false)}
+            >
+                <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setMenuVisible(false)}>
+                    <View style={styles.modalSheet}>
+                        <TouchableOpacity
+                            style={styles.menuItem}
+                            onPress={() => { setMenuVisible(false); router.push('/leaderboard') }}
+                        >
+                            <Text style={styles.menuItemIcon}>🏆</Text>
+                            <Text style={styles.menuItemText}>{t('menu.leaderboard')}</Text>
+                        </TouchableOpacity>
+                        <View style={styles.menuDivider} />
+                        <TouchableOpacity
+                            style={styles.menuItem}
+                            onPress={() => { setMenuVisible(false); router.push('/privacy') }}
+                        >
+                            <Text style={styles.menuItemIcon}>🔒</Text>
+                            <Text style={styles.menuItemText}>{t('menu.privacyPolicy')}</Text>
+                        </TouchableOpacity>
+                        <View style={styles.menuDivider} />
+                        <TouchableOpacity
+                            style={styles.menuItem}
+                            onPress={() => { setMenuVisible(false); router.push('/settings') }}
+                        >
+                            <Text style={styles.menuItemIcon}>⚙️</Text>
+                            <Text style={styles.menuItemText}>{t('menu.settings')}</Text>
+                        </TouchableOpacity>
+                        <View style={styles.menuDivider} />
+                        <TouchableOpacity
+                            style={styles.menuItem}
+                            onPress={() => { setMenuVisible(false); router.push('/about') }}
+                        >
+                            <Text style={styles.menuItemIcon}>ℹ️</Text>
+                            <Text style={styles.menuItemText}>{t('menu.about')}</Text>
+                        </TouchableOpacity>
+                        <View style={styles.menuDivider} />
+                        <TouchableOpacity
+                            style={[styles.menuItem, styles.menuItemClose]}
+                            onPress={() => setMenuVisible(false)}
+                        >
+                            <Text style={styles.menuCloseText}>{t('menu.close')}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
         </View>
     )
 }
@@ -282,7 +333,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: '#3B6D11',
     },
-    leaderBtn: {
+    menuBtn: {
         position: 'absolute',
         top: 56,
         right: 24,
@@ -300,7 +351,30 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 3,
     },
-    leaderIcon: { fontSize: 20 },
+    menuIcon: { fontSize: 20, color: '#3B6D11' },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        justifyContent: 'flex-end',
+    },
+    modalSheet: {
+        backgroundColor: '#fff',
+        borderTopLeftRadius: 16,
+        borderTopRightRadius: 16,
+        paddingBottom: 32,
+        paddingTop: 8,
+    },
+    menuItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 16,
+        paddingHorizontal: 24,
+    },
+    menuItemIcon: { fontSize: 20, marginRight: 16 },
+    menuItemText: { fontSize: 16, color: '#1a1a1a' },
+    menuDivider: { height: 1, backgroundColor: '#f0f0f0', marginHorizontal: 24 },
+    menuItemClose: { justifyContent: 'center' },
+    menuCloseText: { fontSize: 16, color: '#888', textAlign: 'center', flex: 1 },
     cluster: { position: 'relative' },
     clusterIcon: { width: 50, height: 75 },
     clusterBadge: {

@@ -6,15 +6,28 @@
     "preview": {
       "android": {
         "buildType": "apk"
+      },
+      "ios": {
+        "simulator": false,
+        "distribution": "internal"
       }
     },
     "production": {
       "android": {
         "buildType": "app-bundle"
+      },
+      "ios": {
+        "distribution": "store"
       }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "petiar@gmail.com",
+        "ascAppId": "",
+        "appleTeamId": ""
+      }
+    }
   }
 }

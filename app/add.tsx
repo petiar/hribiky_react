@@ -95,15 +95,15 @@ export default function AddScreen() {
         console.log('location:', location)
 
         if (!title.trim()) {
-            Alert.alert('Chyba', t('add.errorTitle'))
+            Alert.alert(t('common.error'), t('add.errorTitle'))
             return
         }
         if (!name.trim()) {
-            Alert.alert('Chyba', t('add.errorName'))
+            Alert.alert(t('common.error'), t('add.errorName'))
             return
         }
         if (!location) {
-            Alert.alert('Chyba', t('add.errorGps'))
+            Alert.alert(t('common.error'), t('add.errorGps'))
             return
         }
 
@@ -133,9 +133,9 @@ export default function AddScreen() {
                 await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
 
                 Alert.alert(
-                    'Uložené offline',
-                    'Nemáš internetové pripojenie. Hríbik sme uložili a odošleme ho automaticky keď budeš online.',
-                    [{ text: 'OK', onPress: () => router.back() }]
+                    t('common.savedOfflineTitle'),
+                    t('add.savedOfflineMessage'),
+                    [{ text: t('add.successButton'), onPress: () => router.back() }]
                 )
                 return
             }
@@ -174,10 +174,30 @@ export default function AddScreen() {
                     { text: t('add.successButton'), onPress: () => router.back() }
                 ])
             } else {
-                Alert.alert('Chyba', data.message ?? t('add.errorGeneral'))
+                Alert.alert(t('common.error'), data.message ?? t('add.errorGeneral'))
             }
         } catch (e) {
-            Alert.alert('Chyba', t('add.errorConnection'))
+            try {
+                await addToQueue({
+                    title,
+                    name,
+                    description,
+                    email: email.trim() || undefined,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                    altitude: location.altitude ?? undefined,
+                    country,
+                    photos,
+                })
+                await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
+                Alert.alert(
+                    t('common.savedOfflineTitle'),
+                    t('add.savedOfflineMessage'),
+                    [{ text: t('add.successButton'), onPress: () => router.back() }]
+                )
+            } catch {
+                Alert.alert(t('common.error'), t('add.errorGeneral'))
+            }
         } finally {
             setSubmitting(false)
         }
