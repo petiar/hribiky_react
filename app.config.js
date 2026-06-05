@@ -10,7 +10,7 @@ export default {
       "expo-localization",
       "expo-font",
       ["react-native-maps", {
-        "enableGoogleMaps": true
+        "iosGoogleMapsApiKey": process.env.GOOGLE_MAPS_API_KEY
       }]
     ],
     version: "1.0.0",
