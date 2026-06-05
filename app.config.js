@@ -35,6 +35,7 @@ export default {
         NSCameraUsageDescription: "Potrebujeme kameru na fotenie hríbikov.",
         NSPhotoLibraryUsageDescription: "Vyberieme fotku hríbika z knižnice.",
         NSPhotoLibraryAddUsageDescription: "Ukladáme fotky hríbikov do knižnice.",
+        ITSAppUsesNonExemptEncryption: false,
       }
     },
     android: {
