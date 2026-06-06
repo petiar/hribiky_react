@@ -26,7 +26,7 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "sk.hribiky.app",
-      buildNumber: "1",
+      buildNumber: "2",
       config: {
         googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY
       },
