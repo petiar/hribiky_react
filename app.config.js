@@ -31,10 +31,10 @@ export default {
         googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY
       },
       infoPlist: {
-        NSLocationWhenInUseUsageDescription: "Používame GPS na zachytenie polohy hríbika.",
-        NSCameraUsageDescription: "Potrebujeme kameru na fotenie hríbikov.",
-        NSPhotoLibraryUsageDescription: "Vyberieme fotku hríbika z knižnice.",
-        NSPhotoLibraryAddUsageDescription: "Ukladáme fotky hríbikov do knižnice.",
+        NSLocationWhenInUseUsageDescription: "Aplikácia používa vašu aktuálnu polohu na automatické zaznamenanie GPS súradníc turistického rozcestníka (hríbika), ktorý pridávate do databázy. Súradnice sa uložia spolu so záznamom a zobrazia sa ostatným turistom na mape.",
+        NSCameraUsageDescription: "Aplikácia používa kameru na fotenie turistických rozcestníkov (hríbikov). Odfotené snímky môžete priložiť k novému záznamu alebo komentáru a zdieľať ich s ostatnými turistami v aplikácii.",
+        NSPhotoLibraryUsageDescription: "Aplikácia potrebuje prístup k fotoknižnici, aby ste mohli vybrať existujúce fotky turistických rozcestníkov (hríbikov) a priložiť ich k novému záznamu alebo komentáru v aplikácii.",
+        NSPhotoLibraryAddUsageDescription: "Aplikácia ukladá fotky turistických rozcestníkov (hríbikov) do vašej fotoknižnice, ak si ich chcete ponechať lokálne po odfotení.",
         ITSAppUsesNonExemptEncryption: false,
       }
     },
