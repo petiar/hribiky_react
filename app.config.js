@@ -10,7 +10,8 @@ export default {
       "expo-localization",
       "expo-font",
       ["react-native-maps", {
-        "iosGoogleMapsApiKey": process.env.GOOGLE_MAPS_API_KEY
+        "iosGoogleMapsApiKey": process.env.GOOGLE_MAPS_API_KEY,
+        "androidGoogleMapsApiKey": process.env.GOOGLE_MAPS_API_KEY_ANDROID
       }]
     ],
     version: "1.0.0",
@@ -27,9 +28,6 @@ export default {
       supportsTablet: true,
       bundleIdentifier: "sk.hribiky.app",
       buildNumber: "2",
-      config: {
-        googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY
-      },
       infoPlist: {
         NSLocationWhenInUseUsageDescription: "Aplikácia používa vašu aktuálnu polohu na automatické zaznamenanie GPS súradníc turistického rozcestníka (hríbika), ktorý pridávate do databázy. Súradnice sa uložia spolu so záznamom a zobrazia sa ostatným turistom na mape.",
         NSCameraUsageDescription: "Aplikácia používa kameru na fotenie turistických rozcestníkov (hríbikov). Odfotené snímky môžete priložiť k novému záznamu alebo komentáru a zdieľať ich s ostatnými turistami v aplikácii.",
@@ -45,7 +43,6 @@ export default {
         foregroundImage: "./assets/icon.png",
         backgroundColor: "#ffffff"
       },
-      edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
       permissions: [
         "android.permission.ACCESS_FINE_LOCATION",
@@ -53,12 +50,7 @@ export default {
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
-      ],
-      config: {
-        googleMaps: {
-          apiKey: process.env.GOOGLE_MAPS_API_KEY
-        }
-      }
+      ]
     },
     web: {
       favicon: "./assets/favicon.png"
