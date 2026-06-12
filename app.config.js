@@ -40,7 +40,7 @@ export default {
     },
     android: {
       package: "sk.hribiky.app",
-      versionCode: 1,
+      versionCode: 2,
       adaptiveIcon: {
         foregroundImage: "./assets/icon.png",
         backgroundColor: "#ffffff"
