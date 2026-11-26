@@ -14,7 +14,7 @@ export default {
         "androidGoogleMapsApiKey": process.env.GOOGLE_MAPS_API_KEY_ANDROID
       }]
     ],
-    version: "1.0.0",
+    version: "1.1.0",
     orientation: "portrait",
     userInterfaceStyle: "light",
     newArchEnabled: true,
@@ -27,7 +27,7 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "sk.hribiky.app",
-      buildNumber: "2",
+      buildNumber: "3",
       infoPlist: {
         NSLocationWhenInUseUsageDescription: "Aplikácia používa vašu aktuálnu polohu na automatické zaznamenanie GPS súradníc turistického rozcestníka (hríbika), ktorý pridávate do databázy. Súradnice sa uložia spolu so záznamom a zobrazia sa ostatným turistom na mape.",
         NSCameraUsageDescription: "Aplikácia používa kameru na fotenie turistických rozcestníkov (hríbikov). Odfotené snímky môžete priložiť k novému záznamu alebo komentáru a zdieľať ich s ostatnými turistami v aplikácii.",
@@ -38,7 +38,7 @@ export default {
     },
     android: {
       package: "sk.hribiky.app",
-      versionCode: 3,
+      versionCode: 4,
       adaptiveIcon: {
         foregroundImage: "./assets/icon.png",
         backgroundColor: "#ffffff"
