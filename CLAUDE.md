@@ -4,7 +4,7 @@
 Mobilná aplikácia pre Hribiky.sk – databázu turistických rozcestníkov (tzv. "hríbikov") na Slovensku a v Česku. Aplikácia umožňuje prezerať existujúce hríbiky na mape, pridávať nové a komentovať existujúce.
 
 ## Tech stack
-- **Framework**: React Native + Expo SDK 54
+- **Framework**: React Native + Expo SDK 55
 - **Routing**: Expo Router (file-based, `app/` adresár)
 - **Mapy**: react-native-maps s PROVIDER_GOOGLE + react-native-map-clustering
 - **Lokalizácia**: i18next (sk, cs, en) — všetky user-facing stringy MUSIA byť cez `t('...')`, nikdy natvrdo
@@ -30,7 +30,8 @@ locales/
 ## Dôležité konvencie
 - **Preklady**: Vždy pridaj kľúč do všetkých troch locale súborov (sk, cs, en) pred použitím v kóde
 - **API key**: hlavičky `{ 'Api-Key': API_KEY }` pri každom requeste
-- **Fotky upload**: FormData kľúč `photos[]` (Symfony konvencia), pre komentáre `photo[]`
+- **Fotky upload**: FormData kľúč `photos[]` (Symfony konvencia), pre komentáre `photo[]` (server prijme `photo`, `photo[]`, `photos`, `photos[]`)
+- **Počet fotiek**: max `MAX_PHOTOS` = 5 (`constants/limits.ts`) pre hríbik aj komentár, musí sedieť s `FotoUploader::MAX_FILES` na serveri
 - **Krajina**: detekcia SK vs CZ podľa súradníc bez API (`detectCountry()` v add.tsx)
 - **Mapa**: pozícia mapy sa pamätá cez module-level `lastRegion` premennú
 

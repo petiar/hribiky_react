@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { StyleSheet, View, TouchableOpacity, Text, ActivityIndicator, Image, Modal } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Text, ActivityIndicator, Image, Modal, Alert } from 'react-native'
 import MapView from 'react-native-map-clustering'
 import { Marker, Callout, PROVIDER_GOOGLE, MapView as RNMapView } from 'react-native-maps'
 import { useRouter } from 'expo-router'
@@ -8,6 +8,8 @@ import * as Haptics from 'expo-haptics'
 import { useTheme } from "../hooks/useTheme"
 import NetInfo from '@react-native-community/netinfo'
 import { useTranslation } from 'react-i18next'
+import { apiErrorMessage } from '../utils/apiErrors'
+import { subscribeQueue, getFailedItems, retryFailed, discardFailed, syncQueues, QueueStatus } from '../utils/offlineQueue'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL!
 const API_KEY = process.env.EXPO_PUBLIC_API_KEY!
@@ -40,6 +42,36 @@ export default function MapScreen() {
     const { t } = useTranslation()
     const [isOnline, setIsOnline] = useState<boolean | null>(null)
     const [menuVisible, setMenuVisible] = useState(false)
+    const [queueStatus, setQueueStatus] = useState<QueueStatus>({ pending: 0, failed: 0 })
+
+    useEffect(() => subscribeQueue(setQueueStatus), [])
+
+    const showFailedItems = async () => {
+        const { mushrooms: failedMushrooms, comments: failedComments } = await getFailedItems()
+        const lines = [
+            ...failedMushrooms.map(m => `• ${m.title}: ${apiErrorMessage(t, m.lastErrorCode, m.lastError ?? '?')}`),
+            ...failedComments.map(c => `• ${t('common.failedComment')}: ${apiErrorMessage(t, c.lastErrorCode, c.lastError ?? '?')}`),
+        ]
+        Alert.alert(
+            t('common.failedTitle'),
+            `${t('common.failedMessage')}\n\n${lines.join('\n')}`,
+            [
+                { text: t('common.cancel'), style: 'cancel' },
+                {
+                    text: t('common.failedDelete'),
+                    style: 'destructive',
+                    onPress: () => discardFailed(),
+                },
+                {
+                    text: t('common.failedRetry'),
+                    onPress: async () => {
+                        await retryFailed()
+                        syncQueues(API_URL, API_KEY)
+                    },
+                },
+            ]
+        )
+    }
 
     useEffect(() => {
         NetInfo.fetch().then(state => {
@@ -149,11 +181,25 @@ export default function MapScreen() {
                 ))}
             </MapView>
 
-            {!isOnline && (
-                <View style={styles.offlineBanner}>
-                    <Text style={styles.offlineText}>⚠ {t('common.offlineBanner')}</Text>
-                </View>
-            )}
+            <View style={styles.banners} pointerEvents="box-none">
+                {!isOnline && (
+                    <View style={[styles.banner, styles.offlineBanner]}>
+                        <Text style={styles.offlineText}>⚠ {t('common.offlineBanner')}</Text>
+                    </View>
+                )}
+
+                {queueStatus.pending > 0 && (
+                    <View style={[styles.banner, styles.pendingBanner]}>
+                        <Text style={styles.offlineText}>{t('common.pendingBanner', { count: queueStatus.pending })}</Text>
+                    </View>
+                )}
+
+                {queueStatus.failed > 0 && (
+                    <TouchableOpacity style={[styles.banner, styles.failedBanner]} onPress={showFailedItems}>
+                        <Text style={styles.offlineText}>{t('common.failedBanner', { count: queueStatus.failed })}</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
 
             {loading && (
                 <View style={styles.loader}>
@@ -392,15 +438,26 @@ const styles = StyleSheet.create({
         borderColor: '#ddd',
     },
     clusterCount: { color: '#1a1a1a', fontSize: 13, fontWeight: '700' },
-    offlineBanner: {
+    banners: {
         position: 'absolute',
         top: 106,
         left: 16,
         right: 16,
-        backgroundColor: '#e24b4a',
+        gap: 8,
+    },
+    banner: {
         padding: 10,
         borderRadius: 8,
         alignItems: 'center',
+    },
+    offlineBanner: {
+        backgroundColor: '#e24b4a',
+    },
+    pendingBanner: {
+        backgroundColor: '#BA7517',
+    },
+    failedBanner: {
+        backgroundColor: '#A32D2D',
     },
     offlineText: {
         color: '#fff',
