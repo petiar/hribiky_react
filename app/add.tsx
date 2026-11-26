@@ -10,8 +10,10 @@ import { useRouter } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Haptics from 'expo-haptics'
 import { useTranslation } from 'react-i18next'
+import { MAX_PHOTOS } from '../constants/limits'
+import { apiErrorCode, apiErrorMessage } from '../utils/apiErrors'
 import NetInfo from '@react-native-community/netinfo'
-import { addToQueue, sendQueuedMushrooms } from '../utils/offlineQueue'
+import { addToQueue } from '../utils/offlineQueue'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL!
 const API_KEY = process.env.EXPO_PUBLIC_API_KEY!
@@ -62,7 +64,7 @@ export default function AddScreen() {
     }, [])
 
     const pickPhoto = async () => {
-        if (photos.length >= 5) return
+        if (photos.length >= MAX_PHOTOS) return
 
         const { status } = await ImagePicker.requestCameraPermissionsAsync()
         if (status !== 'granted') {
@@ -174,7 +176,10 @@ export default function AddScreen() {
                     { text: t('add.successButton'), onPress: () => router.back() }
                 ])
             } else {
-                Alert.alert(t('common.error'), data.message ?? t('add.errorGeneral'))
+                Alert.alert(
+                    t('common.error'),
+                    apiErrorMessage(t, apiErrorCode(res.status, data), data.message ?? t('add.errorGeneral'))
+                )
             }
         } catch (e) {
             try {
@@ -233,7 +238,7 @@ export default function AddScreen() {
                         </View>
                     </TouchableOpacity>
                 ))}
-                {photos.length < 5 && (
+                {photos.length < MAX_PHOTOS && (
                     <TouchableOpacity style={styles.photoAdd} onPress={pickPhoto}>
                         <Text style={styles.photoAddText}>+</Text>
                     </TouchableOpacity>

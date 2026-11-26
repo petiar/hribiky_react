@@ -26,7 +26,7 @@ type Mushroom = {
     id: number
     title: string
     name: string
-    description: string
+    description: string | null
     latitude: number
     longitude: number
     altitude: number | null
@@ -52,14 +52,27 @@ export default function MushroomDetail() {
         setLightboxVisible(true)
     }
 
-    useEffect(() => {
+    // Neschválený hríbik vráti 200 s telom [] a neexistujúci 404 s HTML – oboje berieme ako „nenájdené“.
+    const loadMushroom = () => {
+        setLoading(true)
         fetch(`${API_URL}/mushrooms/${id}/`, {
             headers: { 'Api-Key': API_KEY }
         })
-            .then(res => res.json())
+            .then(async res => {
+                if (!res.ok) return null
+                const data = await res.json()
+                return data && !Array.isArray(data) && data.id ? (data as Mushroom) : null
+            })
             .then(data => setMushroom(data))
-            .catch(err => console.error('API error:', err))
+            .catch(err => {
+                console.error('API error:', err)
+                setMushroom(null)
+            })
             .finally(() => setLoading(false))
+    }
+
+    useEffect(() => {
+        loadMushroom()
     }, [id])
 
     if (loading) {
@@ -78,14 +91,7 @@ export default function MushroomDetail() {
                 </TouchableOpacity>
                 <View style={styles.center}>
                     <Text style={styles.notFoundText}>{t('detail.notFound')}</Text>
-                    <TouchableOpacity style={styles.retryBtn} onPress={() => {
-                        setLoading(true)
-                        fetch(`${API_URL}/mushrooms/${id}/`, { headers: { 'Api-Key': API_KEY } })
-                            .then(res => res.json())
-                            .then(data => setMushroom(data))
-                            .catch(err => console.error('API error:', err))
-                            .finally(() => setLoading(false))
-                    }}>
+                    <TouchableOpacity style={styles.retryBtn} onPress={loadMushroom}>
                         <Text style={styles.retryText}>{t('detail.retry')}</Text>
                     </TouchableOpacity>
                 </View>
