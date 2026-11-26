@@ -50,6 +50,15 @@ export default {
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
+      ],
+      // expo-media-library (jeho config plugin sa aplikuje automaticky) pridáva tieto povolenia,
+      // ale na Androide ukladanie do galérie nepoužívame (viď utils/photoGallery.ts).
+      // READ_MEDIA_IMAGES/VIDEO Google Play povoľuje len so zdôvodnením, preto ich blokujeme.
+      blockedPermissions: [
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO",
+        "android.permission.READ_MEDIA_AUDIO",
+        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED"
       ]
     },
     web: {

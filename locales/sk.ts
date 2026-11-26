@@ -145,6 +145,9 @@ export default {
     },
     settings: {
         title: 'Nastavenia',
+        photos: 'Fotky',
+        saveToGallery: 'Ukladať fotky do galérie',
+        saveToGalleryHint: 'Odfotené fotky hríbikov sa uložia aj do galérie telefónu, aby si ich nestratil.',
         language: 'Jazyk aplikácie',
         languages: {
             sk: 'Slovenčina',

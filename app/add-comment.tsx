@@ -10,6 +10,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import * as Haptics from 'expo-haptics'
 import { useTranslation } from 'react-i18next'
 import { MAX_PHOTOS } from '../constants/limits'
+import { savePhotoToGallery } from '../utils/photoGallery'
 import { apiErrorCode, apiErrorMessage } from '../utils/apiErrors'
 import NetInfo from '@react-native-community/netinfo'
 import { addCommentToQueue } from '../utils/offlineQueue'
@@ -48,6 +49,9 @@ export default function AddCommentScreen() {
             quality: 0.7,
         })
         if (!result.canceled) {
+            // Originál (plné rozlíšenie) uložíme aj do galérie – na pozadí, neblokuje formulár.
+            void savePhotoToGallery(result.assets[0].uri)
+
             const manipulated = await ImageManipulator.manipulateAsync(
                 result.assets[0].uri,
                 [{ resize: { width: 1200 } }],

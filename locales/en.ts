@@ -147,6 +147,9 @@ export default {
     },
     settings: {
         title: 'Settings',
+        photos: 'Photos',
+        saveToGallery: 'Save photos to gallery',
+        saveToGalleryHint: 'Photos you take of trail markers are also saved to your phone\'s gallery so they don\'t get lost.',
         language: 'App language',
         languages: {
             sk: 'Slovenčina',

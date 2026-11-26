@@ -147,6 +147,9 @@ export default {
     },
     settings: {
         title: 'Nastavení',
+        photos: 'Fotky',
+        saveToGallery: 'Ukládat fotky do galerie',
+        saveToGalleryHint: 'Pořízené fotky houbiček se uloží i do galerie telefonu, abys o ně nepřišel.',
         language: 'Jazyk aplikace',
         languages: {
             sk: 'Slovenčina',

@@ -1,9 +1,11 @@
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import { useEffect, useState } from 'react'
+import { StyleSheet, View, Text, TouchableOpacity, Switch } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useTheme } from "../hooks/useTheme"
 import { useTranslation } from 'react-i18next'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { LANGUAGE_KEY } from './_layout'
+import { getSaveToGallery, setSaveToGallery, isGallerySaveSupported } from '../utils/photoGallery'
 
 const LANGUAGES = [
     { code: 'sk', label: 'Slovenčina' },
@@ -16,6 +18,16 @@ export default function SettingsScreen() {
     const theme = useTheme()
     const { t, i18n } = useTranslation()
     const current = i18n.language
+    const [saveToGallery, setSaveToGalleryState] = useState(true)
+
+    useEffect(() => {
+        getSaveToGallery().then(setSaveToGalleryState)
+    }, [])
+
+    const toggleSaveToGallery = (value: boolean) => {
+        setSaveToGalleryState(value)
+        setSaveToGallery(value)
+    }
 
     const changeLanguage = async (code: string) => {
         await AsyncStorage.setItem(LANGUAGE_KEY, code)
@@ -50,6 +62,23 @@ export default function SettingsScreen() {
                     </TouchableOpacity>
                 ))}
             </View>
+
+            {isGallerySaveSupported && (
+                <View style={styles.section}>
+                    <Text style={styles.sectionLabel}>{t('settings.photos')}</Text>
+                    <View style={styles.option}>
+                        <View style={styles.optionTextWrap}>
+                            <Text style={styles.optionText}>{t('settings.saveToGallery')}</Text>
+                            <Text style={styles.optionHint}>{t('settings.saveToGalleryHint')}</Text>
+                        </View>
+                        <Switch
+                            value={saveToGallery}
+                            onValueChange={toggleSaveToGallery}
+                            trackColor={{ true: theme.primary }}
+                        />
+                    </View>
+                </View>
+            )}
         </View>
     )
 }
@@ -97,5 +126,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#f0f0f0',
     },
     optionText: { fontSize: 16, color: '#1a1a1a' },
+    optionTextWrap: { flex: 1, paddingRight: 12 },
+    optionHint: { fontSize: 13, color: '#888', marginTop: 2 },
     checkmark: { fontSize: 18, fontWeight: '600' },
 })
